@@ -1,3 +1,5 @@
+# the first debugged version of our semi-automatic search and fetch program
+
 from Bio import Entrez
 from Bio import SeqIO
 import xml
@@ -112,7 +114,7 @@ webenv = search_results["WebEnv"]
 query_key = search_results["QueryKey"]
 # fetching sequences in batches via history
 
-with open(save_to_file_name + ext(retrieve_type), "w") as f:
+with open(save_to_file_name + ext(retrieve_type), "a") as f:
     for start in range(0, count, batch_size):
         end = min(count, start + batch_size)
         print("Going to download record %i to %i" % (start + 1, end))
@@ -128,31 +130,4 @@ with open(save_to_file_name + ext(retrieve_type), "w") as f:
         data = fetch_handle.read()
         fetch_handle.close()
         print(data)
-        # f.write(data)
-
-#fetching a sequence via its ID
-
-filename = ".gbk"
-seqid = ''
-
-if not os.path.isfile(filename):
-    # Downloading...
-    net_handle = Entrez.efetch(
-        db="nucleotide", id=seqid, rettype="gb", retmode="text")
-    out_handle = open(filename, "w")
-    out_handle.write(net_handle.read())
-    out_handle.close()
-    net_handle.close()
-    print("Saved")
-
-print("Parsing...")
-record = SeqIO.read(filename, "genbank")
-print(record)
-
-#
-
-# read a sequence
-# for seq_record in SeqIO.parse("ls_orchid.fasta", "fasta"):
-#     print seq_record.id
-#     print repr(seq_record.seq)
-#     print len(seq_record)
+        f.write(data)
